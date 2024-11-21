@@ -1,0 +1,39 @@
+﻿@page "/"
+
+@using Microsoft.AspNetCore.Identity;
+@inject AuthenticationStateProvider _authenticationStateProvider;
+@* @inject IServiceProvider _serviceProvider;
+@inject UserManager<Data.ApplicationUser> _userManager *@
+
+<PageTitle>Home</PageTitle>
+
+@if (_isAuthenticated)
+{
+    <div>Du er logget ind (from code)</div>
+
+    @if (_isAdmin)
+    {
+        <div>Du er Admin</div>
+    }
+    else
+    {
+        <div>Du er IKKE Admin</div>
+    }
+}
+else
+{
+    <div>Du er IKKE logget ind (from code)</div>
+}
+
+@code{
+    public bool _isAuthenticated;
+    public bool _isAdmin;
+    protected override async Task OnInitializedAsync()
+    {
+        // CreateUserRoleAsync("Admin", "usama1@emaill.com");
+        var authenState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authenState.User;
+        _isAuthenticated = user.Identity.IsAuthenticated;
+        _isAdmin = user.IsInRole("Admin");
+    }
+}
